@@ -1,8 +1,10 @@
 package com.example.projectdanp.presentation
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.paging.compose.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -11,12 +13,12 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.projectdanp.data.Entry
 import com.example.projectdanp.data.EntryViewModel
 import com.example.projectdanp.navigation.AppScreens
@@ -28,7 +30,7 @@ import com.example.projectdanp.presentation.components.TitleRow
 @Composable
 fun EntriesScreen(navController: NavController, viewModel: EntryViewModel) {
 
-    val allEntrys by viewModel.fetchAllEntry().observeAsState(listOf())
+    val allEntrys = viewModel.allEntry.collectAsLazyPagingItems()
     val searchResults by viewModel.searchResults.observeAsState(listOf())
 
 
@@ -58,7 +60,7 @@ fun EntriesScreen(navController: NavController, viewModel: EntryViewModel) {
 
 @Composable
 fun FirstMainScreen(
-    allEntrys: List<Entry>,
+    allEntrys: LazyPagingItems<Entry>,
     searchResults: List<Entry>,
     viewModel: EntryViewModel,
     navController: NavController
@@ -113,14 +115,53 @@ fun FirstMainScreen(
                 .fillMaxWidth()
                 .padding(10.dp)
         ) {
+            val listEntries = allEntrys.itemSnapshotList.items
+            Log.i("Entries", listEntries.toString())
 
-            val list = if (searching) searchResults else allEntrys
+            val list = if (searching) searchResults else listEntries
             item {
                 TitleRow(head2 = "Amount", head3 = "Description", head4 = "Currency", head5 = "Date")
             }
             items(list) { entry ->
                 EntryRow(entry, navController)
             }
+            val refreshState = allEntrys.loadState.refresh
+            if (refreshState is LoadState.Loading)
+                item {
+                    Row(verticalAlignment =  Alignment.CenterVertically) {
+                        CircularProgressIndicator()
+                    }
+                }
+            else if (refreshState is LoadState.Error)
+                item {
+                    Box(modifier = Modifier.fillParentMaxSize()) {
+                        val error = refreshState.error
+
+                        Text("Error: ${error.localizedMessage}")
+                        Button(onClick = { allEntrys.retry() }) {
+                            Text("Retry")
+                        }
+                    }
+                }
+
+            val appendState = allEntrys.loadState.append
+            if (appendState is LoadState.Loading)
+                item {
+                    Row(verticalAlignment =  Alignment.CenterVertically) {
+                        Text("Loading...")
+                        CircularProgressIndicator()
+                    }
+                }
+            else if (appendState is LoadState.Error)
+                item {
+                    val error = appendState.error
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("Subsequent data Error: ${error.localizedMessage}")
+                        Button(onClick = { allEntrys.retry() }) {
+                            Text("Retry")
+                        }
+                    }
+                }
         }
     }
 }

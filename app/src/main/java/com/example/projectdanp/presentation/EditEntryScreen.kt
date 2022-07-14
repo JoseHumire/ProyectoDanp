@@ -19,6 +19,7 @@ import com.example.projectdanp.navigation.AppScreens
 import com.example.projectdanp.presentation.components.InputValue
 import com.example.projectdanp.presentation.components.TitleComponent
 import java.time.LocalDateTime
+import kotlin.random.Random
 
 @Composable
 fun EditEntryScreen(navController: NavController, entry: Entry, viewModel: EntryViewModel) {
@@ -86,7 +87,9 @@ fun EditEntryScreen(navController: NavController, entry: Entry, viewModel: Entry
                 val current = LocalDateTime.now()
                 if (entry.id != 0) {
                     Spacer(
-                        Modifier.height(20.0.dp).width(20.dp))
+                        Modifier
+                            .height(20.0.dp)
+                            .width(20.dp))
                     Button(onClick = {
                         viewModel.updateEntry(
                             Entry(

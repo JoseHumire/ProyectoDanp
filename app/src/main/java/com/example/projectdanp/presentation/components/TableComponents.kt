@@ -55,26 +55,28 @@ fun TitleRow(head2: String, head3: String, head4: String, head5: String) {
 }
 
 @Composable
-fun EntryRow(entry: Entry, navController: NavController) {
+fun EntryRow(entry: Entry? = null, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
             .clickable {
-                navController.currentBackStackEntry?.savedStateHandle?.set("entry", entry.id)
+                navController.currentBackStackEntry?.savedStateHandle?.set("entry", entry?.id)
                 navController.navigate(AppScreens.EditEntryScreen.route)
             }
     ) {
-        if (entry.isIncome){
-            Text(entry.amount.toString(), modifier = Modifier.weight(0.2f), color = Color.Green)
-        }else{
-            Text(entry.amount.toString(), modifier = Modifier.weight(0.2f), color = Color.Red)
+        if (entry != null){
+            if (entry.isIncome){
+                Text(entry.amount.toString(), modifier = Modifier.weight(0.2f), color = Color.Green)
+            }else{
+                Text(entry.amount.toString(), modifier = Modifier.weight(0.2f), color = Color.Red)
+            }
+            Text(entry.description, modifier = Modifier.weight(0.2f))
+            Text(entry.currency, modifier = Modifier.weight(0.2f))
+            Text(
+                entry.day.toString().plus("/").plus(entry.month).plus("/").plus(entry.year),
+                modifier = Modifier.weight(0.2f))
         }
-        Text(entry.description, modifier = Modifier.weight(0.2f))
-        Text(entry.currency, modifier = Modifier.weight(0.2f))
-        Text(
-            entry.day.toString().plus("/").plus(entry.month).plus("/").plus(entry.year),
-            modifier = Modifier.weight(0.2f))
     }
 }
 

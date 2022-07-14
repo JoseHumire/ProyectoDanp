@@ -18,7 +18,7 @@ fun AppNavigation(
     viewModelEntry: EntryViewModel,
 ) {
 
-    val allEntrys by viewModelEntry.fetchAllEntry().observeAsState(listOf())
+    val allEntrys by viewModelEntry.readAllData().observeAsState(listOf())
     var entry: Entry
     NavHost(navController = navController, startDestination = AppScreens.EntryListScreen.route) {
         composable(

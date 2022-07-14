@@ -1,11 +1,12 @@
 package com.example.projectdanp.data
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
 
-class EntryRepository(application: Application) {
+class EntryRepository(val totalCount: Int, val pageSize: Int, application: Application) {
     private var entryDao: EntryDao
     val searchResults = MutableLiveData<List<Entry>>()
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -16,6 +17,19 @@ class EntryRepository(application: Application) {
     }
 
     val readAllData: LiveData<List<Entry>> = entryDao.readAllData()
+
+    suspend fun getPaginatedData(page: Int): List<Entry> {
+
+        val startIndex = (page - 1) * pageSize + 1
+        var endIndex = startIndex + pageSize - 1
+        if (endIndex > totalCount) {
+            endIndex = totalCount
+        }
+        delay(3000)
+
+        return (startIndex..endIndex).map { index -> readAllData.value!![index] }
+
+    }
 
     suspend fun addEntry(entry: Entry) {
         entryDao.addEntry(entry)
