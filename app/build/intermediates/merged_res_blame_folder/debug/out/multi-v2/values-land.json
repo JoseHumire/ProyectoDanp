@@ -1,0 +1,36 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.example.projectdanp.app-mergeDebugResources-52:/values-land/values-land.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Felix\\.gradle\\caches\\transforms-3\\23bb7d60faf9d19d2cdd8bc3e0f8adab\\transformed\\ui-1.1.0-beta01\\res\\values-land\\values-land.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "48",
+                        "endOffsets": "99"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Felix\\.gradle\\caches\\transforms-3\\8dd475897af58d369d3951ff4ab2c74a\\transformed\\appcompat-1.2.0\\res\\values-land\\values-land.xml",
+                    "from": {
+                        "startLines": "2,3,4",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,125,196",
+                        "endColumns": "69,70,67",
+                        "endOffsets": "120,191,259"
+                    },
+                    "to": {
+                        "startLines": "3,4,5",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "104,174,245",
+                        "endColumns": "69,70,67",
+                        "endOffsets": "169,240,308"
+                    }
+                }
+            ]
+        }
+    ]
+}
